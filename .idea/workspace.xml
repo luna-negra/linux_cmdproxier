@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efeb56d9-4676-4570-84bd-f09b6f03df0e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/linux_cmd/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/account.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/linux_cmdproxier.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux_cmd/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/file.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +29,8 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "account",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "file",
     "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
   }
 }]]></component>
