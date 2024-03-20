@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="efeb56d9-4676-4570-84bd-f09b6f03df0e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/linux_cmd/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux_cmd/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux_cmd/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux_cmd/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux_cmd/firewall.py" beforeDir="false" afterPath="$PROJECT_DIR$/linux_cmd/firewall.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +18,20 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;luna-negra&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="b860dd62-8995-4597-9d44-6be9cb8a000f" />
+        <option name="url" value="https://github.com/luna-negra/linux_cmdproxier" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -43,5 +60,16 @@
       <updated>1709277704836</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

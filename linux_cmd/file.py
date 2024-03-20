@@ -48,7 +48,7 @@ class FileSystem:
         return False
 
     @staticmethod
-    def get_file_contents(path: str, sudo_password: str = None) -> str:
+    def get_file_contents(path: str, sudo_password: str = None) -> str | None:
 
         """
         return file contents in string format.
@@ -70,7 +70,7 @@ class FileSystem:
         return None
 
     @staticmethod
-    def get_list_on_path(path: str, sudo_password: str = None) -> list:
+    def get_list_on_path(path: str, sudo_password: str = None) -> list | None:
 
         """
         get the file and folder list in specific path
@@ -89,7 +89,7 @@ class FileSystem:
         return None
 
     @staticmethod
-    def get_path_type(path: str, sudo_password: str = None) -> str:
+    def get_path_type(path: str, sudo_password: str = None) -> str | None:
 
         """
         return the type of path. types are in ('file', 'directory', 'link', 'non-file')
@@ -122,7 +122,7 @@ class FileSystem:
         return None
 
     @staticmethod
-    def get_path_with_name(name: str, path: str = "/", sudo_password: str = None) -> list:
+    def get_path_with_name(name: str, path: str = "/", sudo_password: str = None) -> list | None:
 
         """
         find specific file or folder name and get the file's path with 'find' command and option '-name'

@@ -33,7 +33,7 @@ def execute_command_run(stdout: int = subprocess.PIPE,
     return subprocess.run(args=kwargs['command_str'], stdout=stdout, stderr=stderr, shell=shell)
 
 
-def get_specific_env_values(grep_str: str = None) -> str:
+def get_specific_env_values(grep_str: str = None) -> str | None:
     """
     get the environmental variables on linux machine
 
@@ -52,7 +52,7 @@ def get_specific_env_values(grep_str: str = None) -> str:
     return None
 
 
-def get_linux_dist() -> str:
+def get_linux_dist() -> str | None:
 
     """
     return what linux distro are you working with

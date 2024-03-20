@@ -1,7 +1,7 @@
 from linux_cmd import ENCODING, execute_command_run
 
 
-def get_current_username() -> str:
+def get_current_username() -> str | None:
 
     """
     return the current linux username
@@ -18,7 +18,7 @@ def get_current_username() -> str:
     return None
 
 
-def get_current_user_home_path(sudo_password: str = None) -> str:
+def get_current_user_home_path(sudo_password: str = None) -> str | None:
 
     """
     return the absolute path of current user's home directory on linux
