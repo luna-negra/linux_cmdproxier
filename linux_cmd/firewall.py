@@ -95,7 +95,7 @@ def rich_rule(action: str,
         rich_rule_str += f" protocol name=\"{kwargs['protocol']}\""
 
     command_str += f" --{action}-rich-rule=\'{rich_rule_str} {rule_action}\'"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
     if cp.returncode == 0:
        if permanent and restart_firewalld(sudo_password=sudo_password):
