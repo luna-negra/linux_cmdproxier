@@ -24,7 +24,7 @@ def execute_command_run(command_str: str,
     :return: executed result with subprocess.CompletedProcess
     """
 
-    if 'sudo_password' is not None:
+    if sudo_password is not None:
         shell: bool = True
         command_str = f"echo {sudo_password} | sudo -S {command_str}"
 
