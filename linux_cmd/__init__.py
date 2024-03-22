@@ -4,33 +4,34 @@ import subprocess
 ENCODING: str = "utf-8"
 
 
-def execute_command_run(stdout: int = subprocess.PIPE,
+def execute_command_run(command_str: str,
+                        stdout: int = subprocess.PIPE,
                         stderr: int = subprocess.PIPE,
                         shell: bool = False,
-                        **kwargs) -> subprocess.CompletedProcess:
+                        sudo_password: str = None
+                        ) -> subprocess.CompletedProcess:
 
     """
     execute os command and return subprocess.CompletedProcess
 
+    :param command_str: os command you want to execute
     :param stdout:  set where the result will be stored. default is subprocess.PIPE
                     if you want to print the result on the screen, set the value None
     :param stderr:  set where the error will be stored. default is subprocess.PIPE
                     if you want to print the result on the screen, set the value None
     :param shell:   set the 'shell 'options for subprocess.run()
-    :param kwargs:
-      * command_str: os command you want to execute
-      * sudo_password: if you want to execute command with sudo, set the sudo password.
+    :param sudo_password: if you want to execute command with sudo, set the sudo password.
     :return: executed result with subprocess.CompletedProcess
     """
 
-    if kwargs['sudo_password'] is not None:
+    if 'sudo_password' is not None:
         shell: bool = True
-        kwargs['command_str'] = f"echo {kwargs['sudo_password']} | sudo -S {kwargs['command_str']}"
+        command_str = f"echo {sudo_password} | sudo -S {command_str}"
 
     if shell:
-        kwargs['command_str'] = kwargs['command_str'].split(" ")
+        command_str = command_str.split(" ")
 
-    return subprocess.run(args=kwargs['command_str'], stdout=stdout, stderr=stderr, shell=shell)
+    return subprocess.run(args=command_str, stdout=stdout, stderr=stderr, shell=shell)
 
 
 def get_specific_env_values(grep_str: str = None) -> str | None:
