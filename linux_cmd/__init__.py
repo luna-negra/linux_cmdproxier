@@ -47,8 +47,11 @@ def get_specific_env_values(grep_str: str = None) -> str | None:
         command_str += f" | grep {grep_str}"
 
     cp = execute_command_run(command_str=command_str, shell=True)
-    if cp.returncode == 0 and cp.stdout.decode(ENCODING) != "":
-        return cp.stdout.decode(ENCODING).split("=")[1]
+    if cp.returncode == 0:
+
+        for line in cp.stdout.decode(ENCODING).split("\n"):
+            if line.startswith(grep_str):
+                return line.split("=")[1]
 
     return None
 
