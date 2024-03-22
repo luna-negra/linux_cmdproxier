@@ -21,10 +21,29 @@ def is_running(sudo_password: str = None) -> bool:
     return False
 
 
+def get_all_zones(sudo_password: str = None) -> list | None:
+
+    """
+    return the all zone's name of firewalld.
+
+    :param sudo_password: if you need sudo, set the sudo password
+    :return : a list which contains names of all zone in firewalld
+    """
+
+    command_str: str = "firewall-cmd --get-zones"
+    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+    if cp.returncode == 0:
+        return cp.stdout.decode(ENCODING).split(" ")
+
+    return None
+
+
 def get_default_zone(sudo_password: str = None) -> str | None:
 
     """
     return the firewalld's default zone name
+    be advised that you will get only 'public' if you do not have root or sudo privilege
 
     :param sudo_password: if you need sudo, set the sudo password
     :return : a name of default zone in firewalld
@@ -34,7 +53,7 @@ def get_default_zone(sudo_password: str = None) -> str | None:
     cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
     if cp.returncode == 0:
-        return cp.stdout.decode(ENCODING)
+        return cp.stdout.decode(ENCODING).rstrip("\n")
 
     return None
 
@@ -98,8 +117,9 @@ def rich_rule(action: str,
     cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
     if cp.returncode == 0:
-       if permanent and restart_firewalld(sudo_password=sudo_password):
-           return True
+       if permanent:
+           restart_firewalld(sudo_password=sudo_password)
+       return True
 
     else:
         printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
@@ -145,8 +165,9 @@ def rule_object(action: str,
     cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
     if cp.returncode == 0:
-        if permanent and restart_firewalld(sudo_password=sudo_password):
-            return True
+        if permanent:
+            restart_firewalld(sudo_password=sudo_password)
+        return True
     else:
         printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
 
@@ -162,6 +183,9 @@ def set_default_zone(zone: str, sudo_password: str = None) -> bool:
     :param sudo_password: if you need sudo, set the sudo password
     :result : bool whether the default zone is successfully set or not
     """
+    
+    if zone not in get_all_zones():
+        return False
 
     command_str: str = f"firewall-cmd --set-default-zone={zone}"
     cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)

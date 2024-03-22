@@ -84,7 +84,7 @@ class FileSystem:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
-            return cp.stdout.decode(ENCODING).split(" ")
+            return [ file.rstrip("\n") for file in cp.stdout.decode(ENCODING).split(" ") ]
 
         return None
 
@@ -138,7 +138,7 @@ class FileSystem:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
-            return cp.stdout.decode(ENCODING).split("\n")
+            return list(filter(lambda a: a != '', cp.stdout.decode(ENCODING).split("\n")))
 
         return None
 
@@ -155,7 +155,7 @@ class FileSystem:
         """
 
         command_str: str = f"echo {contents} > {path}"
-        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
         if cp.returncode == 0:
             return True
@@ -197,6 +197,8 @@ class FileSystem:
         :param sudo_password: if you need sudo, set the sudo password
         :result: bool whether the tarball is created successfully or not
         """
+        if not save_as.endswith(".tar"):
+            save_as += ".tar"
 
         command_str: str = f"tar -cvf {save_as} {' '.join(list_target_file)}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
@@ -210,7 +212,7 @@ class FileSystem:
     def wget_download(url: str, save_path: str = None, sudo_password: str = None) -> bool:
 
         """
-        download file from internet
+        download file from internet with wget quietly
 
         :param url: set the url of file which you want to download
         :param save_path: set the path to save downloaded file.
@@ -218,11 +220,11 @@ class FileSystem:
         :return: bool whether the file is downloaded successfully or not
         """
 
-        command_str: str = f"wget -b -q {url} "
+        command_str: str = f"wget -q {url} "
         if save_path is not None: command_str += f"-P {save_path}"
 
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
-        if cp.returncode == 0:
+        if cp.returncode in (0, 1):
             return True
 
         return False
