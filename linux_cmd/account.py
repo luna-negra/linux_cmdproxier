@@ -13,7 +13,7 @@ def get_current_username() -> str | None:
     cp = execute_command_run(command_str=command_str)
 
     if cp.returncode == 0:
-        return cp.stdout.decode(ENCODING)
+        return cp.stdout.decode(ENCODING).rstrip("\n")
 
     return None
 
@@ -30,8 +30,8 @@ def get_current_user_home_path(sudo_password: str = None) -> str | None:
     command_str: str = f"cat /etc/passwd | grep `whoami`"
     cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
-    if cp.returncode == 0 and cp.stdout.decode("utf-8") is not None:
-        return cp.stdout.decode("utf-8").split(":")[-2]
+    if cp.returncode == 0 and cp.stdout.decode(ENCODING) is not None:
+        return cp.stdout.decode(ENCODING).split(":")[-2]
 
     return None
 
@@ -67,8 +67,8 @@ def is_user_exist(username: str, sudo_password: str = None) -> bool:
     command_str: str = f"cat /etc/passwd | grep {username}"
     cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
-    for line in cp.stdout.readlines()[-1:]:
-        if line.decode(ENCODING).startswith(username):
+    for line in cp.stdout.decode(ENCODING).split("\n")[-1:]:
+        if line.startswith(username):
             return True
 
     return False

@@ -28,7 +28,7 @@ def execute_command_run(command_str: str,
         shell: bool = True
         command_str = f"echo {sudo_password} | sudo -S {command_str}"
 
-    if shell:
+    if not shell:
         command_str = command_str.split(" ")
 
     return subprocess.run(args=command_str, stdout=stdout, stderr=stderr, shell=shell)
