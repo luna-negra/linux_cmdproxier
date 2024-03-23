@@ -30,17 +30,18 @@ class FileSystem:
         return False
 
     @staticmethod
-    def is_path_exist(path: str) -> bool:
+    def is_path_exist(path: str, sudo_password: str = None) -> bool:
 
         """
         check whether the path - file or folder - exist or not.
 
         :param path: set absolute path or relative path which you want to search.
+        :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether the path exist or not.
         """
 
         command_str: str = f"ls -lhd {path}"
-        cp = execute_command_run(command_str=command_str)
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0 and cp.stdout.decode(ENCODING) != "":
             return True
