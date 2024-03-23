@@ -12,12 +12,12 @@ def execute_command_run(command_str: str,
                         ) -> subprocess.CompletedProcess:
 
     """
-    execute os command and return subprocess.CompletedProcess
+    execute os command and return subprocess.CompletedProcess.
 
-    :param command_str: os command you want to execute
+    :param command_str: os command you want to execute.
     :param stdout:  set where the result will be stored. default is subprocess.PIPE
                     if you want to print the result on the screen, set the value None
-    :param stderr:  set where the error will be stored. default is subprocess.PIPE
+    :param stderr:  set where the error will be stored. default is subprocess.PIPE.
                     if you want to print the result on the screen, set the value None
     :param shell:   set the 'shell 'options for subprocess.run()
     :param sudo_password: if you want to execute command with sudo, set the sudo password.
@@ -36,10 +36,10 @@ def execute_command_run(command_str: str,
 
 def get_specific_env_values(grep_str: str = None) -> str | None:
     """
-    get the environmental variables on linux machine
+    get the environmental variables on linux machine.
 
-    :param grep_str: if you want to get a specific variables with grep, set the variables' name
-    :return: result of 'env' command or 'env' command with 'grep'
+    :param grep_str: if you want to get a specific variables with grep, set the variables' name.
+    :return: result of 'env' command or 'env' command with 'grep'.
     """
 
     command_str: str = f"env"
@@ -59,7 +59,7 @@ def get_specific_env_values(grep_str: str = None) -> str | None:
 def get_linux_dist() -> str | None:
 
     """
-    return what linux distro are you working with
+    return what linux distro are you working with.
 
     :return: result of command cat /etc/os-release as string.
     """
@@ -79,8 +79,8 @@ def printf_colorlog(text: str, color: str = "white") -> None:
     print colorful text on the terminal.
     set the <> at the start and end of the sentence you want to highlight.
 
-    :param text: set the text you want to print out on your terminal. don't forget to insert '<' and '>'
-    :param color: set the text color you want to highlight. please refer to variable 'color_code'
+    :param text: set the text you want to print out on your terminal. don't forget to insert '<' and '>'.
+    :param color: set the text color you want to highlight. please refer to variable 'color_code'.
     :return: None
     """
 
@@ -117,7 +117,7 @@ def print_wo_change_line(text: str) -> None:
     """
     print text on the terminal but not change the line at the end of the text.
 
-    :param text: set the text you want to print out on your terminal without changing line
+    :param text: set the text you want to print out on your terminal without changing line.
     :return: None
     """
 

@@ -1,216 +1,226 @@
 from linux_cmd import execute_command_run, printf_colorlog, ENCODING
 
 
-def is_running(sudo_password: str = None) -> bool:
+class Firewall:
 
     """
-    return bool whether the firewalld is running or not
+    class Firewall supports some tools that can handle linux firewall.
+    only support firewall-cmd so do not use this class with iptables.
 
-    :param sudo_password: if you need sudo, set the sudo password
-    :return : bool whether the firewalld is running or not
+    all methods are set as static.
     """
 
-    command_str: str = "firewall-cmd --state"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+    @staticmethod
+    def is_running(sudo_password: str = None) -> bool:
 
-    if cp.returncode == 0:
-        if cp.stdout.decode(ENCODING) == "running\n":
+        """
+        return bool whether the firewalld is running or not
+
+        :param sudo_password: if you need sudo, set the sudo password
+        :return : bool whether the firewalld is running or not
+        """
+
+        command_str: str = "firewall-cmd --state"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            if cp.stdout.decode(ENCODING) == "running\n":
+                return True
+
+        printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
+        return False
+
+    @staticmethod
+    def get_all_zones(sudo_password: str = None) -> list | None:
+
+        """
+        return the all zone's name of firewalld.
+
+        :param sudo_password: if you need sudo, set the sudo password
+        :return : a list which contains names of all zone in firewalld
+        """
+
+        command_str: str = "firewall-cmd --get-zones"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return cp.stdout.decode(ENCODING).split(" ")
+
+        return None
+
+    @staticmethod
+    def get_default_zone(sudo_password: str = None) -> str | None:
+
+        """
+        return the firewalld's default zone name
+        be advised that you will get only 'public' if you do not have root or sudo privilege
+
+        :param sudo_password: if you need sudo, set the sudo password
+        :return : a name of default zone in firewalld
+        """
+
+        command_str: str = "firewall-cmd --get-default-zone"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return cp.stdout.decode(ENCODING).rstrip("\n")
+
+        return None
+
+    @staticmethod
+    def rich_rule(action: str,
+                  rule_action: str,
+                  family: str = "ipv4",
+                  zone: str = None,
+                  permanent: bool = False,
+                  sudo_password: str = None,
+                  **kwargs) -> bool:
+
+        """
+        add or remove rich rule in specific zone
+
+        :param action: assign "add" or "remove" for rich_rule
+        :param rule_action: assign rule action for rich rule. ['accept', 'reject', 'drop', 'mark']
+        :param family: assign among "ipv4" or "ipv6"
+        :param zone: specify the zone name in string form where you want to add or remove object. default is default zone
+        :param permanent: bool for applying or removing port and number in permanently
+        :**kwargs:
+        - srcip: source ip. [IP, IP/PREFIX]
+        - dstip: destination ip. [IP, IP/PREFIX]
+        - svcname: name of service that registered in /etc/services
+        - port: port_number(or port range with number1-number2)/protocol
+        - protocol: protocol name or ID registered in /etc/protocols.
+        :param sudo_password: if you need sudo, set the sudo password
+        :return: bool whether the rich rule are successfully added / removed or not
+        """
+
+        if action not in ("add", "remove"):
+            return False
+
+        kwargs_keys = kwargs.keys()
+        command_str: str = "firewall-cmd"
+        rich_rule_str: str = f"rule family=\"{family}\""
+
+        if zone is not None:
+            command_str += f" --zone={zone}"
+
+        if permanent:
+            command_str += f" --permanent"
+
+        if "srcip" in kwargs_keys:
+            rich_rule_str += f" source address=\"{kwargs['srcip']}\""
+
+        if "dstip" in kwargs_keys:
+            rich_rule_str += f" destination address=\"{kwargs['dstip']}\""
+
+        if "svcname" in kwargs_keys:
+            rich_rule_str += f" service name=\"{kwargs['svcname']}\""
+
+        if "port" in kwargs_keys:
+            tmp: list = kwargs['port'].split("/")
+            rich_rule_str += f" port port=\"{tmp[0]}\" protocol=\"{tmp[1]}\""
+
+        if "protocol" in kwargs_keys:
+            rich_rule_str += f" protocol name=\"{kwargs['protocol']}\""
+
+        command_str += f" --{action}-rich-rule=\'{rich_rule_str} {rule_action}\'"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
+
+        if cp.returncode == 0:
+           if permanent:
+               Firewall.restart_firewalld(sudo_password=sudo_password)
+           return True
+
+        else:
+            printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
+
+        return False
+
+    @staticmethod
+    def rule_object(action: str,
+                    obj_type: list,
+                    value: list,
+                    zone: str = None,
+                    permanent: bool = False,
+                    sudo_password: str = None) -> bool:
+
+        """
+        add or remove firewalld rule object in specific zone
+
+        :param action: assign "add" or "remove" for rule object
+        :param obj_type: assign an object type. ['interface', 'port', 'protocol', 'service', 'source']
+        :param value: set the value that you want to add or remove. follow the reference with param type
+        - interface: name of interface on linux machine
+        - port: port_number/protocol
+        - protocol: protocol name or ID registered in /etc/protocols.
+        - service: name of service that registered in /etc/services
+        - sources: ipv4_address_or_network_segment/prefix
+        :param zone: specify the zone name in string form where you want to add or remove rule objects. default is default zone
+        :param permanent: bool for applying or removing rule objects in permanently
+        :param sudo_password: if you need sudo, set the sudo password
+        :return: bool whether the rule objects are successfully added / removed or not
+        """
+
+        if action not in ("add", "remove"):
+            return False
+
+        command_str: str = f"firewall-cmd --{action}-{obj_type}={value}"
+
+        if zone is not None:
+            command_str += f" --zone={zone}"
+
+        if permanent:
+            command_str += f" --permanent"
+
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            if permanent:
+                Firewall.restart_firewalld(sudo_password=sudo_password)
+            return True
+        else:
+            printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
+
+        return False
+
+    @staticmethod
+    def set_default_zone(zone: str, sudo_password: str = None) -> bool:
+
+        """
+        set the default zone with specific zone
+
+        :param zone: a name of zone which you want to set as default zone
+        :param sudo_password: if you need sudo, set the sudo password
+        :result : bool whether the default zone is successfully set or not
+        """
+
+        if zone not in Firewall.get_all_zones():
+            return False
+
+        command_str: str = f"firewall-cmd --set-default-zone={zone}"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
             return True
 
-    printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
-    return False
-
-
-def get_all_zones(sudo_password: str = None) -> list | None:
-
-    """
-    return the all zone's name of firewalld.
-
-    :param sudo_password: if you need sudo, set the sudo password
-    :return : a list which contains names of all zone in firewalld
-    """
-
-    command_str: str = "firewall-cmd --get-zones"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
-
-    if cp.returncode == 0:
-        return cp.stdout.decode(ENCODING).split(" ")
-
-    return None
-
-
-def get_default_zone(sudo_password: str = None) -> str | None:
-
-    """
-    return the firewalld's default zone name
-    be advised that you will get only 'public' if you do not have root or sudo privilege
-
-    :param sudo_password: if you need sudo, set the sudo password
-    :return : a name of default zone in firewalld
-    """
-
-    command_str: str = "firewall-cmd --get-default-zone"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
-
-    if cp.returncode == 0:
-        return cp.stdout.decode(ENCODING).rstrip("\n")
-
-    return None
-
-
-def rich_rule(action: str,
-              rule_action: str,
-              family: str = "ipv4",
-              zone: str = None,
-              permanent: bool = False,
-              sudo_password: str = None,
-              **kwargs) -> bool:
-
-    """
-    add or remove rich rule in specific zone
-
-    :param action: assign "add" or "remove" for rich_rule
-    :param rule_action: assign rule action for rich rule. ['accept', 'reject', 'drop', 'mark']
-    :param family: assign among "ipv4" or "ipv6"
-    :param zone: specify the zone name in string form where you want to add or remove object. default is default zone
-    :param permanent: bool for applying or removing port and number in permanently
-    :**kwargs:
-    - srcip: source ip. [IP, IP/PREFIX]
-    - dstip: destination ip. [IP, IP/PREFIX]
-    - svcname: name of service that registered in /etc/services
-    - port: port_number(or port range with number1-number2)/protocol
-    - protocol: protocol name or ID registered in /etc/protocols.
-    :param sudo_password: if you need sudo, set the sudo password
-    :return: bool whether the rich rule are successfully added / removed or not
-    """
-
-    if action not in ("add", "remove"):
-        return False
-
-    kwargs_keys = kwargs.keys()
-    command_str: str = "firewall-cmd"
-    rich_rule_str: str = f"rule family=\"{family}\""
-
-    if zone is not None:
-        command_str += f" --zone={zone}"
-
-    if permanent:
-        command_str += f" --permanent"
-
-    if "srcip" in kwargs_keys:
-        rich_rule_str += f" source address=\"{kwargs['srcip']}\""
-
-    if "dstip" in kwargs_keys:
-        rich_rule_str += f" destination address=\"{kwargs['dstip']}\""
-
-    if "svcname" in kwargs_keys:
-        rich_rule_str += f" service name=\"{kwargs['svcname']}\""
-
-    if "port" in kwargs_keys:
-        tmp: list = kwargs['port'].split("/")
-        rich_rule_str += f" port port=\"{tmp[0]}\" protocol=\"{tmp[1]}\""
-
-    if "protocol" in kwargs_keys:
-        rich_rule_str += f" protocol name=\"{kwargs['protocol']}\""
-
-    command_str += f" --{action}-rich-rule=\'{rich_rule_str} {rule_action}\'"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
-
-    if cp.returncode == 0:
-       if permanent:
-           restart_firewalld(sudo_password=sudo_password)
-       return True
-
-    else:
         printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
-
-    return False
-
-
-def rule_object(action: str,
-                obj_type: list,
-                value: list,
-                zone: str = None,
-                permanent: bool = False,
-                sudo_password: str = None) -> bool:
-
-    """
-    add or remove firewalld rule object in specific zone
-
-    :param action: assign "add" or "remove" for rule object
-    :param obj_type: assign an object type. ['interface', 'port', 'protocol', 'service', 'source']
-    :param value: set the value that you want to add or remove. follow the reference with param type
-    - interface: name of interface on linux machine
-    - port: port_number/protocol
-    - protocol: protocol name or ID registered in /etc/protocols.
-    - service: name of service that registered in /etc/services
-    - sources: ipv4_address_or_network_segment/prefix
-    :param zone: specify the zone name in string form where you want to add or remove rule objects. default is default zone
-    :param permanent: bool for applying or removing rule objects in permanently
-    :param sudo_password: if you need sudo, set the sudo password
-    :return: bool whether the rule objects are successfully added / removed or not
-    """
-
-    if action not in ("add", "remove"):
         return False
 
-    command_str: str = f"firewall-cmd --{action}-{obj_type}={value}"
+    @staticmethod
+    def restart_firewalld(sudo_password: str = None) -> bool:
 
-    if zone is not None:
-        command_str += f" --zone={zone}"
+        """
+        reload firewalld
 
-    if permanent:
-        command_str += f" --permanent"
+        :param sudo_password: if you need sudo, set the sudo password
+        :result: bool whether the firewalld is successfully reloaded or not
+        """
 
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+        command_str: str = "firewall-cmd --reload"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
-    if cp.returncode == 0:
-        if permanent:
-            restart_firewalld(sudo_password=sudo_password)
-        return True
-    else:
-        printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
+        if cp.returncode == 0:
+            return True
 
-    return False
-
-
-def set_default_zone(zone: str, sudo_password: str = None) -> bool:
-
-    """
-    set the default zone with specific zone
-
-    :param zone: a name of zone which you want to set as default zone
-    :param sudo_password: if you need sudo, set the sudo password
-    :result : bool whether the default zone is successfully set or not
-    """
-    
-    if zone not in get_all_zones():
+        printf_colorlog(text=f"<{cp.stdout.decode(ENCODING)}>", color="b_red")
         return False
-
-    command_str: str = f"firewall-cmd --set-default-zone={zone}"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
-
-    if cp.returncode == 0:
-        return True
-
-    printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
-    return False
-
-
-def restart_firewalld(sudo_password: str = None) -> bool:
-
-    """
-    reload firewalld
-
-    :param sudo_password: if you need sudo, set the sudo password
-    :result: bool whether the firewalld is successfully reloaded or not
-    """
-
-    command_str: str = "firewall-cmd --reload"
-    cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
-
-    if cp.returncode == 0:
-        return True
-
-    printf_colorlog(text=f"<{cp.stdout.decode(ENCODING)}>", color="b_red")
-    return False

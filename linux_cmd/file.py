@@ -13,12 +13,12 @@ class FileSystem:
     def create_symlink(target_path: str, link_path: str, sudo_password: str = None) -> bool:
 
         """
-        create symlink
+        create symlink.
 
-        :param target_path: path of link's target file or folder
-        :param link_path: path of link
-        :param sudo_password: if you need sudo, set the sudo password
-        :return: bool whether symlink is created successfully or not
+        :param target_path: path of link's target file or folder.
+        :param link_path: path of link.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: bool whether symlink is created successfully or not.
         """
 
         command_str: str = f"ln -s {target_path} {link_path}"
@@ -33,10 +33,10 @@ class FileSystem:
     def is_path_exist(path: str) -> bool:
 
         """
-        check whether the path - file or folder - exist or not
+        check whether the path - file or folder - exist or not.
 
-        :param path: set absolute path or relative path which you want to search
-        :return: bool whether the path exist or not
+        :param path: set absolute path or relative path which you want to search.
+        :return: bool whether the path exist or not.
         """
 
         command_str: str = f"ls -lhd {path}"
@@ -53,8 +53,8 @@ class FileSystem:
         """
         return file contents in string format.
 
-        :param path: set the file path
-        :param sudo_password: if you need sudo, set the sudo password
+        :param path: set the file path.
+        :param sudo_password: if you need sudo, set the sudo password.
         :return: return file's contents in string form.
         """
 
@@ -73,11 +73,11 @@ class FileSystem:
     def get_list_on_path(path: str, sudo_password: str = None) -> list | None:
 
         """
-        get the file and folder list in specific path
+        get the file and folder list in specific path.
 
-        :param path: set the path you want to get a file or folder list
-        :param sudo_password: if you need sudo, set the sudo password
-        :return: list value which contains the list of files and folders in path
+        :param path: set the path you want to get a file or folder list.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: list value which contains the list of files and folders in path.
         """
 
         command_str: str = f"ls {path}"
@@ -92,10 +92,10 @@ class FileSystem:
     def get_path_type(path: str, sudo_password: str = None) -> str | None:
 
         """
-        return the type of path. types are in ('file', 'directory', 'link', 'non-file')
+        return the type of path. types are in ('file', 'directory', 'link', 'non-file').
 
         :param path: set the path of which you want to see the type.
-        :param sudo_password: if you need sudo, set the sudo password
+        :param sudo_password: if you need sudo, set the sudo password.
         :return: type of path in string.
         """
 
@@ -125,13 +125,13 @@ class FileSystem:
     def get_path_with_name(name: str, path: str = "/", sudo_password: str = None) -> list | None:
 
         """
-        find specific file or folder name and get the file's path with 'find' command and option '-name'
-        if you want to get an absolute path, please set the search_path as absolute
+        find specific file or folder name and get the file's path with 'find' command and option '-name'.
+        if you want to get an absolute path, please set the search_path as absolute.
 
-        :param name: set file or folder name
-        :param path: set the path of file or folder with name. default value is '/'
-        :param sudo_password: if you need sudo, set the sudo password
-        :return: list value which contains the result of 'find' command
+        :param name: set file or folder name.
+        :param path: set the path of file or folder with name. default value is '/'.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: list value which contains the result of 'find' command.
         """
 
         command_str: str = f"find {path} -name {name}"
@@ -150,8 +150,8 @@ class FileSystem:
 
         :param path: target file's path. absolute path is recommended.
         :param contents: contents in string you want to write down in a target file.
-        :param sudo_password: if you need sudo, set the sudo password
-        :return: bool whether contents are written down on the target file well or not
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: bool whether contents are written down on the target file well or not.
         """
 
         command_str: str = f"echo {contents} > {path}"
@@ -166,12 +166,12 @@ class FileSystem:
     def tar_unzip(tarball_path: str, save_path: str = None, sudo_password: str = None) -> bool:
 
         """
-        extract tarball
+        extract tarball.
 
-        :param tarball_path: tarball path which you want to extract
+        :param tarball_path: tarball path which you want to extract.
         :param save_path: set a path where extracted folder will be located.
-        :param sudo_password: if you need sudo, set the sudo password
-        :result: bool whether the tarball is extracted successfully or not
+        :param sudo_password: if you need sudo, set the sudo password.
+        :result: bool whether the tarball is extracted successfully or not.
         """
 
         command_str: str = f"tar -xf {tarball_path} "
@@ -190,12 +190,12 @@ class FileSystem:
     def tar_zip(list_target_file: list, save_as: str, sudo_password: str = None) -> bool:
 
         """
-        create tarball
+        create tarball.
 
         :param list_target_file: list contains files which will be in tarball.
         :param save_as: set a path where created tarball will be located.
-        :param sudo_password: if you need sudo, set the sudo password
-        :result: bool whether the tarball is created successfully or not
+        :param sudo_password: if you need sudo, set the sudo password.
+        :result: bool whether the tarball is created successfully or not.
         """
         if not save_as.endswith(".tar"):
             save_as += ".tar"
@@ -212,12 +212,12 @@ class FileSystem:
     def wget_download(url: str, save_path: str = None, sudo_password: str = None) -> bool:
 
         """
-        download file from internet with wget quietly
+        download file from internet with wget quietly.
 
-        :param url: set the url of file which you want to download
+        :param url: set the url of file which you want to download.
         :param save_path: set the path to save downloaded file.
-        :param sudo_password: if you need sudo, set the sudo password
-        :return: bool whether the file is downloaded successfully or not
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: bool whether the file is downloaded successfully or not.
         """
 
         command_str: str = f"wget -q {url} "
