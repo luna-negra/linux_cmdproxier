@@ -109,14 +109,14 @@ class NetworkManager:
 
         return False
 
-
     @staticmethod
-    def set_interface_zone(ifc: str, zone:str, sudo_password: str = None) -> bool:
+    def set_interface_zone(ifc: str, zone: str, sudo_password: str = None) -> bool:
 
         """
         set the interface to the specific firewalld's zone.
 
         :param ifc: set the interface name to get the connection name of interface.
+        :param zone: set the zone which interface belong to.
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether the interface are successfully belong to zone's interface or not.
         """
@@ -129,4 +129,3 @@ class NetworkManager:
             return True
 
         return False
-
