@@ -27,20 +27,19 @@ class Account:
         return None
 
     @staticmethod
-    def get_current_user_home_path(sudo_password: str = None) -> str | None:
+    def get_current_user_home_path() -> str | None:
 
         """
         return the absolute path of current user's home directory on linux.
 
-        :param sudo_password: if /etc/passwd need sudo, set sudo password.
         :return: absolute path of current user's home directory.
         """
 
-        command_str: str = f"cat /etc/passwd | grep `whoami`"
+        command_str: str = f"echo $HOME"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
         if cp.returncode == 0 and cp.stdout.decode(ENCODING) is not None:
-            return cp.stdout.decode(ENCODING).split(":")[-2]
+            return cp.stdout.decode(ENCODING).rstrip("\n")
 
         return None
 
