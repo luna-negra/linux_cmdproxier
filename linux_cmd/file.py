@@ -1,4 +1,5 @@
 from linux_cmd import ENCODING, execute_command_run
+from linux_cmd.account import Account
 
 
 class FileSystem:
@@ -85,7 +86,7 @@ class FileSystem:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
-            return [ file.rstrip("\n") for file in cp.stdout.decode(ENCODING).split(" ") ]
+            return [ file.rstrip("\n") for file in filter(lambda a: a != '', cp.stdout.decode(ENCODING).split("\n")) ]
 
         return None
 
@@ -144,6 +145,31 @@ class FileSystem:
         return None
 
     @staticmethod
+    def make_folder(path: str, parents: bool = False, sudo_password: str = None) -> bool:
+
+        """
+        make folder in linux file system.
+
+        :param path: path with folder name which you want to create.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :param parents: bool for applying mkdir option -P
+        :return: bool whether the folder is successfully created or not.
+        """
+
+        command_str = "mkdir "
+        if parents:
+            command_str += "-p "
+
+        command_str += f"{path}"
+
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return True
+
+        return False
+
+    @staticmethod
     def set_file_contents(path: str, contents: str, sudo_password: str = None) -> bool:
 
         """
@@ -171,6 +197,7 @@ class FileSystem:
 
         :param tarball_path: tarball path which you want to extract.
         :param save_path: set a path where extracted folder will be located.
+                          if the path not exist, new folder will be created.
         :param sudo_password: if you need sudo, set the sudo password.
         :result: bool whether the tarball is extracted successfully or not.
         """
@@ -178,11 +205,16 @@ class FileSystem:
         command_str: str = f"tar -xf {tarball_path} "
         if save_path is not None:
             command_str += f"-C {save_path}"
+            
+            if not FileSystem.is_path_exist(path=save_path):
+                FileSystem.make_folder(path=save_path)
+
         else:
             command_str += f"-C {'/'.join(tarball_path.split('/')[:-1])}"
 
-        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
-        if cp.returncode == 0 or cp.returncode == 2:
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
+
+        if cp.returncode == 0:
             return True
 
         return False
