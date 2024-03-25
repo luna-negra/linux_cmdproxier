@@ -53,7 +53,7 @@ class Account:
         :return: bool for current user's root or sudo privilege.
         """
 
-        command_str: str = f"head -n 1 /etc/sudo.conf"
+        command_str: str = f"head -n 1 /etc/sudoers"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
         if cp.returncode == 0:
@@ -75,7 +75,7 @@ class Account:
         command_str: str = f"cat /etc/passwd | grep {username}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
-        for line in cp.stdout.decode(ENCODING).split("\n")[-1:]:
+        for line in cp.stdout.decode(ENCODING).split("\n")[:-1]:
             if line.startswith(username):
                 return True
 
