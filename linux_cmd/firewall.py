@@ -1,8 +1,8 @@
-from linux_cmd import execute_command_run, printf_colorlog, ENCODING
+from linux_cmd import execute_command_run, printf_colorlog, ENCODING, get_linux_dist
+from linux_cmd.centos.nmcli import NetworkManager
 
 
 class Firewall:
-
     """
     class Firewall supports some tools that can handle linux firewall.
     only support firewall-cmd so do not use this class with iptables.
@@ -127,9 +127,9 @@ class Firewall:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
 
         if cp.returncode == 0:
-           if permanent:
-               Firewall.restart_firewalld(sudo_password=sudo_password)
-           return True
+            if permanent:
+                Firewall.reload(sudo_password=sudo_password)
+            return True
 
         else:
             printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
@@ -139,13 +139,14 @@ class Firewall:
     @staticmethod
     def rule_object(action: str,
                     obj_type: list,
-                    value: list,
+                    value: str,
                     zone: str = None,
                     permanent: bool = False,
                     sudo_password: str = None) -> bool:
 
         """
         add or remove firewalld rule object in specific zone
+        be advised that you can not remove interface from the specific zone in CentOS.
 
         :param action: assign "add" or "remove" for rule object
         :param obj_type: assign an object type. ['interface', 'port', 'protocol', 'service', 'source']
@@ -161,7 +162,12 @@ class Firewall:
         :return: bool whether the rule objects are successfully added / removed or not
         """
 
-        if action not in ("add", "remove"):
+        # centos can not add interface to the zone with firewall-cmd.
+        # instead firewall-cmd, this code uses nmcli.
+        # removing interface with firewall-cmd command and --permanent option can not be allowed due to the SELINUX.
+        if obj_type == "interface" and get_linux_dist() == "CentOS Stream 8" and permanent:
+            if action == "add":
+                return NetworkManager.set_interface_zone(ifc=value, zone=zone, sudo_password=sudo_password)
             return False
 
         command_str: str = f"firewall-cmd --{action}-{obj_type}={value}"
@@ -176,8 +182,9 @@ class Firewall:
 
         if cp.returncode == 0:
             if permanent:
-                Firewall.restart_firewalld(sudo_password=sudo_password)
+                Firewall.reload(sudo_password=sudo_password)
             return True
+
         else:
             printf_colorlog(text=f"<{cp.stderr.decode(ENCODING)}>", color="b_red")
 
@@ -207,7 +214,7 @@ class Firewall:
         return False
 
     @staticmethod
-    def restart_firewalld(sudo_password: str = None) -> bool:
+    def reload(sudo_password: str = None) -> bool:
 
         """
         reload firewalld
