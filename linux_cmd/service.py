@@ -10,7 +10,7 @@ class Service:
     """
 
     @staticmethod
-    def is_enabled_service(service: str, sudo_password: str = None) -> bool:
+    def is_enabled(service: str, sudo_password: str = None) -> bool:
 
         """
         return bool whether the service is enabled or not.
@@ -30,7 +30,7 @@ class Service:
         return False
 
     @staticmethod
-    def is_running_service(service: str, sudo_password: str = None) -> bool:
+    def is_running(service: str, sudo_password: str = None) -> bool:
 
         """
         return bool whether the service is running or not.
@@ -50,7 +50,45 @@ class Service:
         return False
 
     @staticmethod
-    def start_service(service: str, sudo_password: str = None) -> bool:
+    def set_disable(service: str, sudo_password: str = None) -> bool:
+
+        """
+        set the service disable.
+
+        :param service: set the linux service name which you want to make disable.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: bool whether the service is disabled or not.
+        """
+
+        command_str: str = f"systemctl disable {service}"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return True
+
+        return False
+
+    @staticmethod
+    def set_enable(service: str, sudo_password: str = None) -> bool:
+
+        """
+        set the service enable.
+
+        :param service: set the linux service name which you want to make enable.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: bool whether the service is enabled or not.
+        """
+
+        command_str: str = f"systemctl enable {service}"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return True
+
+        return False
+
+    @staticmethod
+    def start(service: str, sudo_password: str = None) -> bool:
 
         """
         start linux service(Daemon).
@@ -71,7 +109,7 @@ class Service:
         return False
 
     @staticmethod
-    def stop_service(service: str, sudo_password: str = None) -> bool:
+    def stop(service: str, sudo_password: str = None) -> bool:
 
         """
         stop linux service(Daemon).
@@ -92,7 +130,7 @@ class Service:
         return False
 
     @staticmethod
-    def restart_service(service: str, sudo_password: str = None) -> bool:
+    def restart(service: str, sudo_password: str = None) -> bool:
 
         """
         restart linux service(Daemon).
