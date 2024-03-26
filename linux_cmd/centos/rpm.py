@@ -29,17 +29,17 @@ class Rpm:
         return None
 
     @staticmethod
-    def install(rpm_path: str, sudo_password: str = None) -> bool:
+    def install(package_path: str, sudo_password: str = None) -> bool:
 
         """
         install rpm file on linux machine
 
-        :param rpm_path: set the path of rpm file to install
+        :param package_path: set the path of rpm file to install
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether rpm file is successfully installed or not.
         """
 
-        command_str: str = f"rpm -i {rpm_path}"
+        command_str: str = f"rpm -i {package_path}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
@@ -48,17 +48,17 @@ class Rpm:
         return False
 
     @staticmethod
-    def is_installed(rpm_name: str, sudo_password: str = None) -> bool:
+    def is_installed(package_name: str, sudo_password: str = None) -> bool:
 
         """
         check whether the specific rpm is installed or not on linux machine.
 
-        :param rpm_name: set the name of rpm to check whether it is installed or not.
+        :param package_name: set the name of rpm to check whether it is installed or not.
         :param sudo_password: if you need sudo, set the sudo password.
         :return: bool whether the specific rpm is installed or not on linux machine.
         """
 
-        command_str: str = f"rpm -qa | grep {rpm_name}"
+        command_str: str = f"rpm -qa | grep {package_name}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0 and cp.stdout.decode(ENCODING) != "":
@@ -67,17 +67,17 @@ class Rpm:
         return False
 
     @staticmethod
-    def uninstall(rpm_name: str, sudo_password: str = None) -> bool:
+    def uninstall(package_name: str, sudo_password: str = None) -> bool:
 
         """
         uninstall rpm package on linux machine
 
-        :param rpm_name: set the name of rpm to uninstall
+        :param package_name: set the name of rpm to uninstall
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether rpm file is successfully uninstalled or not.
         """
 
-        command_str: str = f"rpm -e {rpm_name}"
+        command_str: str = f"rpm -e {package_name}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:

@@ -29,17 +29,17 @@ class Dpkg:
         return None
 
     @staticmethod
-    def install(deb_path: str, sudo_password: str = None) -> bool:
+    def install(package_path: str, sudo_password: str = None) -> bool:
 
         """
         install deb file on linux machine
 
-        :param deb_path: set the path of deb file to install
+        :param package_path: set the path of deb file to install
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether deb file is successfully installed or not.
         """
 
-        command_str: str = f"dpkg --install {deb_path}"
+        command_str: str = f"dpkg --install {package_path}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
@@ -48,17 +48,17 @@ class Dpkg:
         return False
 
     @staticmethod
-    def is_installed(deb_name: str, sudo_password: str = None) -> bool:
+    def is_installed(package_name: str, sudo_password: str = None) -> bool:
 
         """
         check whether the specific deb is installed or not on linux machine.
 
-        :param deb_name: set the name of deb to check whether it is installed or not.
+        :param package_name: set the name of deb to check whether it is installed or not.
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether the specific deb is installed or not on linux machine.
         """
 
-        command_str: str = f"dpkg --list | grep {deb_name}"
+        command_str: str = f"dpkg --list | grep {package_name}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0 and cp.stdout.decode(ENCODING) != "":
@@ -67,18 +67,18 @@ class Dpkg:
         return False
 
     @staticmethod
-    def uninstall(deb_name: str, purge: bool = False, sudo_password: str = None) -> bool:
+    def uninstall(package_name: str, purge: bool = False, sudo_password: str = None) -> bool:
 
         """
         uninstall deb package on linux machine
 
-        :param deb_name: set the name of deb to uninstall.
+        :param package_name: set the name of deb to uninstall.
         :param purge: bool whether the config file will be also deleted or not.
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether deb file is successfully uninstalled or not.
         """
 
-        command_str: str = f"dpkg --remove {deb_name}"
+        command_str: str = f"dpkg --remove {package_name}"
         if purge:
             command_str = command_str.replace("remove", "purge")
 
