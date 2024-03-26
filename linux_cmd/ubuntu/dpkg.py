@@ -67,21 +67,17 @@ class Dpkg:
         return False
 
     @staticmethod
-    def uninstall(package_name: str, purge: bool = False, sudo_password: str = None) -> bool:
+    def uninstall(package_name: str, sudo_password: str = None) -> bool:
 
         """
         uninstall deb package on linux machine
 
         :param package_name: set the name of deb to uninstall.
-        :param purge: bool whether the config file will be also deleted or not.
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether deb file is successfully uninstalled or not.
         """
 
-        command_str: str = f"dpkg --remove {package_name}"
-        if purge:
-            command_str = command_str.replace("remove", "purge")
-
+        command_str: str = f"dpkg --purge {package_name}"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:

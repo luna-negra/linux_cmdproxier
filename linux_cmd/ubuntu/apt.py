@@ -40,23 +40,20 @@ class Apt:
         :return: bool whether the package is already installed or not.
         """
 
-        return Dpkg.is_installed(deb_name=package, sudo_password=sudo_password)
+        return Dpkg.is_installed(package_name=package, sudo_password=sudo_password)
 
     @staticmethod
-    def uninstall(package: str, purge: bool = False, sudo_password: str = None) -> bool:
+    def uninstall(package: str, sudo_password: str = None) -> bool:
 
         """
-        uninstall centos package which is already installed in linux machine.
+        uninstall ubuntu package which is already installed in linux machine.
 
         :param package: set the package name you want to uninstall
-        :param purge: bool whether the config file will be also deleted or not.
         :param sudo_password: if you need sudo, set sudo password.
         :return: bool whether the package is successfully uninstalled or not.
         """
 
-        command_str: str = f"apt-get remove -y {package}"
-        if purge:
-            command_str = command_str.replace("remove", "purge")
+        command_str: str = f"apt-get purge -y {package}"
 
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
