@@ -1,5 +1,4 @@
 from linux_cmd import ENCODING, execute_command_run
-from linux_cmd.account import Account
 
 
 class FileSystem:
