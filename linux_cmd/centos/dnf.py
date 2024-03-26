@@ -4,7 +4,7 @@ from linux_cmd.centos import *
 class Dnf:
 
     """
-    class Dnf supports some tools that can manage rpm packages of centos 8.
+    class Dnf supports some tools that can manage rpm packages of ubuntu.
 
     all methods are set as static.
     """
@@ -66,18 +66,17 @@ class Dnf:
 
         return False
 
-
     @staticmethod
-    def upgrade(sudo_password: str = None) -> bool:
+    def update(sudo_password: str = None) -> bool:
 
         """
-        upgrade dnf or yum.
+        update new list of rpm packages for dnf or yum.
 
         :param sudo_password: if you need sudo, set sudo password.
-        :return: bool whether dnf or yum is successfully upgraded or not.
+        :return: bool whether dnf or yum is successfully updated or not.
         """
 
-        command_str: str = f"dnf upgrade -y"
+        command_str: str = f"dnf update -y"
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
