@@ -31,6 +31,7 @@ Third, import module on your project
 
 
 ## 3. Version Info
+The latest version: version _0.1.1_beta
 > <details>
 > <summary>Pre-Release Version</summary>
 > 
@@ -54,5 +55,22 @@ Third, import module on your project
 > <details>
 > <summary>Version 0.1.1_Beta</summary>
 >
-> * 2024.03.26: Completed making draft #1.
+>> <details>
+>> <summary>2024. 03. 27</summary>
+>>
+>> * Complete test on CentOS 8 Stream
+>> * Complete test on Ubuntu 23.04
+>> </details>
+> 
+>> <details>
+>> <summary>2024. 03. 26</summary>
+>>
+>> * Complete making draft #1.
+>> </details>
+>
+>> <details>
+>> <summary>2024. 03. 01</summary>
+>>
+>> * Start Project
+>> </details>
 > </details>
