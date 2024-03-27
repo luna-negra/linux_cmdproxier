@@ -1,0 +1,58 @@
+Project 'linux_cmdproxier'
+================
+
+
+## 1. Introduction
+Project 'linux_cmdproxier' is a project to make a python module ***'linux_cmd'*** which control some linux command with automation.
+This module was design to assist make linux automation script.
+
+>| Support Linux Distributions |
+> <details>
+> <summary> Redhat </summary>
+>
+> * CentOS 8 Stream
+> </details>
+> <details>
+> <summary> Debian </summary>
+>
+> * Ubuntu 23.04
+> </details>
+
+
+## 2. How to Use
+
+First, download this repository on your working local.
+> Download Repository:  `git clone https://luna-negra/linux_cmdproxier`
+
+Second, move or copy the ***'linux_cmd'*** module to your project folder.
+
+Third, import module on your project
+> import module: `import linux_cmd`
+
+
+## 3. Version Info
+> <details>
+> <summary>Pre-Release Version</summary>
+> 
+> * None
+> </details>
+
+> <details>
+> <summary>Stable Version</summary>
+> 
+> * None
+> </details>
+
+> <details>
+> <summary>Test Version</summary>
+> 
+> * Version_0.1.1_Beta (2024.03.27)
+> </details>
+
+
+## 4. Development Log
+> <details>
+> <summary>Version 0.1.1_Beta</summary>
+>
+> * 2024.03.26: Completed making draft #1.
+> </details>
