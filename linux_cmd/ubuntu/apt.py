@@ -11,6 +11,26 @@ class Apt:
     """
 
     @staticmethod
+    def auto_remove(package: str, sudo_password: str = None) -> bool:
+
+        """
+        uninstall subpackage related to ubuntu's specific package which is already installed in linux machine.
+
+        :param package: set the package name you want to uninstall its dependant or related packages.
+        :param sudo_password: if you need sudo, set sudo password.
+        :return: bool whether the package is successfully uninstalled or not.
+        """
+
+        command_str: str = f"apt-get autoremove -y {package}"
+
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return True
+
+        return False
+
+    @staticmethod
     def install(package: str, sudo_password: str = None) -> bool:
 
         """
@@ -57,7 +77,7 @@ class Apt:
 
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
-        if cp.returncode == 0:
+        if cp.returncode == 0 and Apt.auto_remove(package=package, sudo_password=sudo_password):
             return True
 
         return False
