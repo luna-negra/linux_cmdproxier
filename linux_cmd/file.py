@@ -27,7 +27,7 @@ class FileSystem:
         if cp.returncode == 0:
             return True
 
-        return False
+        return FileSystem.is_path_exist(path=link_path)
 
     @staticmethod
     def is_path_exist(path: str, sudo_password: str = None) -> bool:
@@ -66,7 +66,7 @@ class FileSystem:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
-            return cp.stdout.decode(ENCODING)
+            return cp.stdout.decode(ENCODING).rstrip("\n")
 
         return None
 
@@ -85,7 +85,7 @@ class FileSystem:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
-            return [ file.rstrip("\n") for file in filter(lambda a: a != '', cp.stdout.decode(ENCODING).split("\n")) ]
+            return [file.rstrip("\n") for file in filter(lambda a: a != '', cp.stdout.decode(ENCODING).split("\n"))]
 
         return None
 
@@ -253,7 +253,8 @@ class FileSystem:
         """
 
         command_str: str = f"wget -q {url} "
-        if save_path is not None: command_str += f"-P {save_path}"
+        if save_path is not None:
+            command_str += f"-P {save_path}"
 
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
         if cp.returncode in (0, 1):
