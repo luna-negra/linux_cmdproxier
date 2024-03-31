@@ -15,11 +15,11 @@ def execute_command_run(command_str: str,
     execute os command and return subprocess.CompletedProcess.
 
     :param command_str: os command you want to execute.
-    :param stdout:  set where the result will be stored. default is subprocess.PIPE
-                    if you want to print the result on the screen, set the value None
+    :param stdout:  set where the result will be stored. default is subprocess.PIPE.
+                    if you want to print the result on the screen, set the value None.
     :param stderr:  set where the error will be stored. default is subprocess.PIPE.
                     if you want to print the result on the screen, set the value None
-    :param shell:   set the 'shell 'options for subprocess.run()
+    :param shell:   set the 'shell' options for subprocess.run()
     :param sudo_password: if you want to execute command with sudo, set the sudo password.
     :return: executed result with subprocess.CompletedProcess
     """
@@ -32,6 +32,37 @@ def execute_command_run(command_str: str,
         command_str = command_str.split(" ")
 
     return subprocess.run(args=command_str, stdout=stdout, stderr=stderr, shell=shell)
+
+
+def execute_command_popen(command_str: str,
+                          stdout: int = subprocess.PIPE,
+                          stderr: int = subprocess.PIPE,
+                          shell: bool = False,
+                          sudo_password: str = None
+                          ) -> subprocess.Popen:
+
+    """
+    execute os command and return subprocess.Popen.
+    If you need to execute command and get result in real-time, use this function instead of 'execute_command_run()'
+
+    :param command_str: os command you want to execute.
+    :param stdout:  set where the result will be stored. default is subprocess.PIPE.
+                    if you want to print the result on the screen, set the value None.
+    :param stderr:  set where the error will be stored. default is subprocess.PIPE.
+                    if you want to print the result on the screen, set the value None
+    :param shell:   set the 'shell' options for subprocess.Popen()
+    :param sudo_password: if you want to execute command with sudo, set the sudo password.
+    :return: executed result with subprocess.Popen
+    """
+
+    if sudo_password is not None:
+        shell: bool = True
+        command_str = f"echo {sudo_password} | sudo -S {command_str}"
+
+    if not shell:
+        command_str = command_str.split(" ")
+
+    return subprocess.Popen(args=command_str, stdout=stdout, stderr=stderr, shell=shell)
 
 
 def get_specific_env_values(grep_str: str = None) -> str | None:
