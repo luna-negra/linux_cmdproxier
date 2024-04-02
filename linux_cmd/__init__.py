@@ -104,6 +104,24 @@ def get_linux_dist() -> str | None:
     return None
 
 
+def get_interface_ipv4_addr(ifc_name: str) -> str | None:
+
+    """
+    return only ipv4 address of ifc_name on linux machine.
+
+    :param ifc_name: name of interface that you want to check the ipv4 address
+    :return : ipv4 address of ifc_name.
+    """
+
+    command_str: str = f"ip add | grep {ifc_name} | grep inet"
+    cp = execute_command_run(command_str=command_str, shell=True)
+
+    if cp.returncode == 0:
+        return list(filter(lambda a: a != "", cp.stdout.decode(ENCODING).split("")))[1]
+
+    return None
+
+
 def printf_colorlog(text: str, color: str = "white") -> None:
 
     """
