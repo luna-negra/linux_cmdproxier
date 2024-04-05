@@ -1,4 +1,4 @@
-from linux_cmd.centos import *
+from ..centos import *
 
 
 class NetworkManager:

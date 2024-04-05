@@ -1,5 +1,5 @@
-from linux_cmd import execute_command_run, printf_colorlog, ENCODING, get_linux_dist
-from linux_cmd.centos.nmcli import NetworkManager
+from .__init__ import execute_command_run, printf_colorlog, ENCODING, get_linux_dist
+from .centos.nmcli import NetworkManager
 
 
 class Firewall:
@@ -31,13 +31,31 @@ class Firewall:
         return False
 
     @staticmethod
+    def get_active_zone_names(sudo_password: str = None) -> list | None:
+
+        """
+        return all active zone's name of firewalld.
+
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return : a list of active zone's name.
+        """
+
+        command_str: str = "firewall-cmd --get-active-zone"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
+
+        if cp.returncode == 0:
+            return list(filter(lambda a: not a.startswith(" ") and a != '', cp.stdout.decode(ENCODING).split("\n")))
+
+        return None
+
+    @staticmethod
     def get_all_zones(sudo_password: str = None) -> list | None:
 
         """
         return the all zone's name of firewalld.
 
-        :param sudo_password: if you need sudo, set the sudo password
-        :return : a list which contains names of all zone in firewalld
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return : a list which contains names of all zone in firewalld.
         """
 
         command_str: str = "firewall-cmd --get-zones"
@@ -68,6 +86,25 @@ class Firewall:
         return None
 
     @staticmethod
+    def get_zone_interfaces(zone: str, sudo_password: str = None) -> list | None:
+
+        """
+        get names of interfaces that belong to the specific firewall zone.
+
+        :param zone: specific zone name to check what interfaces belong to.
+        :param sudo_password: if you need sudo, set the sudo password.
+        :return: list of interfaces that belong to zone.
+        """
+
+        command_str: str = f"firewall-cmd --list-all --zone={zone} | grep interface"
+        cp = execute_command_run(command_str=command_str, sudo_password=sudo_password, shell=True)
+
+        if cp.returncode == 0:
+            return cp.stdout.decode(ENCODING).split("interfaces: ")[1].rstrip("\n").split(" ")
+
+        return None
+
+    @staticmethod
     def rich_rule(action: str,
                   rule_action: str,
                   family: str = "ipv4",
@@ -90,7 +127,7 @@ class Firewall:
         - svcname: name of service that registered in /etc/services
         - port: port_number(or port range with number1-number2)/protocol
         - protocol: protocol name or ID registered in /etc/protocols.
-        :param sudo_password: if you need sudo, set the sudo password
+        :param sudo_password: if you need sudo, set the sudo password.
         :return: bool whether the rich rule are successfully added / removed or not
         """
 

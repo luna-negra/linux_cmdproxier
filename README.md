@@ -24,10 +24,8 @@ This module was design to assist make linux automation script.
 First, download this repository on your working local.
 > Download Repository:  `git clone https://luna-negra/linux_cmdproxier`
 
-Second, move or copy the ***'linux_cmd'*** module to your project folder.
-
-Third, import module on your project
-> import module: `import linux_cmd`
+Second, import module on your project
+> import module: `import linux_cmdproxier`
 
 
 ## 3. Version Info
