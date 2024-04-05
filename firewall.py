@@ -1,4 +1,4 @@
-from __init__ import execute_command_run, printf_colorlog, ENCODING, get_linux_dist
+from .__init__ import execute_command_run, printf_colorlog, ENCODING, get_linux_dist
 from .centos.nmcli import NetworkManager
 
 

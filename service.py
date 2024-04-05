@@ -1,4 +1,4 @@
-from __init__ import ENCODING, execute_command_run, printf_colorlog
+from .__init__ import ENCODING, execute_command_run, printf_colorlog
 
 
 class Service:
