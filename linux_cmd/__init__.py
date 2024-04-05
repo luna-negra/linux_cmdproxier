@@ -117,7 +117,7 @@ def get_interface_ipv4_addr(ifc_name: str) -> str | None:
     cp = execute_command_run(command_str=command_str, shell=True)
 
     if cp.returncode == 0:
-        return list(filter(lambda a: a != "", cp.stdout.decode(ENCODING).split("")))[1]
+        return list(filter(lambda a: a != "", cp.stdout.decode(ENCODING).split(" ")))[1]
 
     return None
 
