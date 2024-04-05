@@ -1,5 +1,5 @@
-from linux_cmd.ubuntu import *
-from linux_cmd.ubuntu.dpkg import Dpkg
+from ..ubuntu import *
+from ..ubuntu.dpkg import Dpkg
 
 
 class Apt:

@@ -1,4 +1,4 @@
-from linux_cmd.ubuntu import *
+from ..ubuntu import *
 
 
 class Dpkg:
