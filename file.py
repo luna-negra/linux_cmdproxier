@@ -1,4 +1,4 @@
-from linux_cmd import ENCODING, execute_command_run
+from __init__ import ENCODING, execute_command_run
 
 
 class FileSystem:

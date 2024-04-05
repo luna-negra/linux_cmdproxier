@@ -1,4 +1,4 @@
-from linux_cmd import execute_command_run, ENCODING
+from __init__ import execute_command_run, ENCODING
 
 
 class ProcessMonitor:
