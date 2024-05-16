@@ -62,7 +62,7 @@ class Firewall:
         cp = execute_command_run(command_str=command_str, sudo_password=sudo_password)
 
         if cp.returncode == 0:
-            return cp.stdout.decode(ENCODING).split(" ")
+            return cp.stdout.decode(ENCODING).strip("\n").split(" ")
 
         return None
 
